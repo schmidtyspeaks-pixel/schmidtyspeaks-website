@@ -201,6 +201,32 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 /* Watch */
 .watch { background: var(--ink); }
+.about { background: var(--ink-2); }
+.watch .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.watch .section-head .h2 { margin: 0; }
+.head-cta { flex: none; }
+.channel { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1.5rem; margin-top: clamp(2.5rem, 5vw, 3.5rem); padding: clamp(1.5rem, 3vw, 2rem); background: var(--ink-3); border: 1px solid var(--line-dark); border-left: 3px solid var(--gold); border-radius: var(--radius); }
+.channel-logo { width: 44px; height: auto; }
+.channel-copy .h3 { margin: 0 0 .35rem; }
+.channel-copy p:last-child { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+.channel-ctas { display: flex; gap: .75rem; flex-wrap: wrap; }
+.channel-ctas .btn { white-space: nowrap; }
+.reels-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-top: clamp(3rem, 6vw, 4.5rem); margin-bottom: 1.25rem; flex-wrap: wrap; }
+.reels-head .kicker { margin-bottom: .5rem; }
+.reels-head .h3 { margin: 0; }
+.text-link { color: var(--gold); font-weight: 600; font-size: var(--text-sm); text-underline-offset: 4px; }
+.text-link:hover { color: var(--gold-soft); }
+.reels { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.reel { position: relative; display: block; border-radius: var(--radius); overflow: hidden; background: #000; outline: 2px solid transparent; outline-offset: 2px; transition: outline-color .2s; }
+.reel img { display: block; width: 100%; aspect-ratio: 9/16; object-fit: cover; transition: transform .5s var(--ease); }
+.reel:hover { outline-color: var(--gold); }
+.reel:hover img { transform: scale(1.03); }
+.reel-badge { position: absolute; top: .6rem; left: .6rem; padding: .25rem .55rem; border-radius: 999px; background: rgba(0,0,0,.65); color: #fff; font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.sail-band { position: relative; min-height: clamp(360px, 52vw, 620px); display: flex; align-items: flex-end; overflow: hidden; }
+.sail-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; }
+.sail-band::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10,8,9,.72) 0%, rgba(10,8,9,.15) 55%, rgba(10,8,9,0) 100%); }
+.sail-band-inner { position: relative; z-index: 1; padding-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+.sail-quote { margin: 0 0 0 auto; text-align: right; font-family: var(--font-display); font-weight: 500; font-size: var(--text-2xl); line-height: 1.1; max-width: 14ch; color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.35); }
 .player { position: relative; border-radius: var(--radius); overflow: hidden; background: #000; }
 .player-poster, .player iframe { display: block; width: 100%; aspect-ratio: 16/9; border: 0; }
 .player-poster { position: relative; padding: 0; background: #000; }
@@ -220,12 +246,16 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.25rem; }
 .vid { width: 100%; text-align: left; background: none; border: 0; padding: 0; }
-.vid img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius); opacity: .75; transition: opacity .25s var(--ease); outline: 2px solid transparent; outline-offset: 2px; }
-.vid span { display: block; margin-top: .6rem; font-size: var(--text-sm); line-height: 1.35; color: var(--text-muted); transition: color .2s; }
-.vid:hover img { opacity: 1; }
-.vid:hover span { color: var(--text); }
-.vid.is-active img { opacity: 1; outline-color: var(--gold); }
-.vid.is-active span { color: var(--gold); }
+.vid-thumb { position: relative; display: block; border-radius: var(--radius); outline: 2px solid transparent; outline-offset: 2px; transition: outline-color .2s; }
+.vid img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius); transition: transform .5s var(--ease), filter .25s; }
+.vid-thumb { overflow: hidden; }
+.vid:hover img { transform: scale(1.03); }
+.vid-play { position: absolute; left: .6rem; bottom: .6rem; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(0,0,0,.65); color: #fff; transition: background .2s, color .2s; }
+.vid:hover .vid-play, .vid.is-active .vid-play { background: var(--gold); color: #131011; }
+.vid .vid-title { display: block; margin-top: .6rem; font-size: var(--text-sm); line-height: 1.35; color: var(--text-muted); transition: color .2s; }
+.vid:hover .vid-title { color: var(--text); }
+.vid.is-active .vid-thumb { outline-color: var(--gold); }
+.vid.is-active .vid-title { color: var(--gold); }
 
 .socials { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: clamp(2.5rem, 5vw, 3.5rem); }
 .social-card { display: flex; align-items: center; gap: 1rem; padding: 1.15rem 1.25rem; border: 1px solid var(--line-dark); border-radius: var(--radius); text-decoration: none; transition: border-color .25s, background .25s; }
@@ -310,6 +340,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 @media (max-width: 1024px) {
   .video-grid { grid-template-columns: repeat(2, 1fr); }
   .socials { grid-template-columns: repeat(2, 1fr); }
+  .reels { grid-template-columns: repeat(2, 1fr); }
+  .channel { grid-template-columns: auto 1fr; }
+  .channel-ctas { grid-column: 1 / -1; }
   .praise-grid { grid-template-columns: 1fr 1fr; }
   .t-lead { grid-column: 1 / -1; }
   .feature-talk { grid-template-columns: 1fr; }
@@ -348,6 +381,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .praise-grid { grid-template-columns: 1fr; }
   .video-grid { gap: .9rem .75rem; }
   .socials { grid-template-columns: 1fr; }
+  .channel { grid-template-columns: 1fr; }
+  .channel-ctas .btn { flex: 1; justify-content: center; }
+  .reels { gap: .75rem; }
   .field-row { grid-template-columns: 1fr; }
   .play-ring { width: 64px; height: 64px; }
   .player-meta { padding-bottom: 1rem; }
