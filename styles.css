@@ -319,13 +319,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .menu-btn { display: block; }
   .nav {
     position: fixed; inset: 72px 0 auto 0; flex-direction: column; align-items: stretch; gap: 0;
-    background: rgba(19,16,17,.98); padding: .5rem var(--gutter) 1.5rem; border-bottom: 1px solid var(--line-dark);
+    background: var(--ink); padding: .5rem var(--gutter) 1.5rem; border-bottom: 1px solid var(--line-dark);
     transform: translateY(-8px); opacity: 0; visibility: hidden; transition: opacity .25s var(--ease), transform .25s var(--ease), visibility .25s;
   }
   .nav.is-open { opacity: 1; visibility: visible; transform: none; }
   .nav a:not(.btn) { padding: 1rem 0; border-bottom: 1px solid var(--line-dark); font-size: var(--text-base); }
   .nav .btn { margin-top: 1.25rem; padding: .9rem 1rem; }
-  .site-header.menu-open { background: rgba(19,16,17,.98); }
+  .site-header.menu-open { background: var(--ink); }
   .about-grid, .behind-grid, .book-grid, .topics-grid { grid-template-columns: 1fr; }
   .about-photo img { aspect-ratio: 4/3; }
   .about-photo::before { display: none; }
