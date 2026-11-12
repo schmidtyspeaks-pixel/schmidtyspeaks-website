@@ -222,6 +222,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .reel:hover { outline-color: var(--gold); }
 .reel:hover img { transform: scale(1.03); }
 .reel-badge { position: absolute; top: .6rem; left: .6rem; padding: .25rem .55rem; border-radius: 999px; background: rgba(0,0,0,.65); color: #fff; font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.clip { display: flex; flex-direction: column; gap: .6rem; }
+.clip video { display: block; width: 100%; aspect-ratio: 9/16; object-fit: cover; background: #000; border-radius: var(--radius); }
+.clip-title { font-size: var(--text-sm); color: var(--text-muted); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.btn[disabled] { opacity: .6; cursor: progress; }
+.gallery { background: var(--ink-2); padding: 0 0 clamp(4rem, 8vw, 6rem); }
+.gallery-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.gallery-grid li { border-radius: var(--radius); overflow: hidden; aspect-ratio: 3/4; }
+.gallery-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s var(--ease); }
+.gallery-grid li:hover img { transform: scale(1.03); }
+.g-wide img { object-position: 33% 50%; }
 .sail-band { position: relative; min-height: clamp(360px, 52vw, 620px); display: flex; align-items: flex-end; overflow: hidden; }
 .sail-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; }
 .sail-band::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10,8,9,.72) 0%, rgba(10,8,9,.15) 55%, rgba(10,8,9,0) 100%); }
@@ -341,6 +352,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
   .socials { grid-template-columns: repeat(2, 1fr); }
   .reels { grid-template-columns: repeat(2, 1fr); }
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
   .channel { grid-template-columns: auto 1fr; }
   .channel-ctas { grid-column: 1 / -1; }
   .praise-grid { grid-template-columns: 1fr 1fr; }
@@ -384,6 +396,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .channel { grid-template-columns: 1fr; }
   .channel-ctas .btn { flex: 1; justify-content: center; }
   .reels { gap: .75rem; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
   .field-row { grid-template-columns: 1fr; }
   .play-ring { width: 64px; height: 64px; }
   .player-meta { padding-bottom: 1rem; }

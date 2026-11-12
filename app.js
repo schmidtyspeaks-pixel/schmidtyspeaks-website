@@ -79,12 +79,16 @@
     player.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
-  // Booking form -> pre-filled email
+  // Booking form -> emailed straight to Schmidty (FormSubmit), with a text alert copy
+  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/schmidtyspeaks@gmail.com';
+  var SMS_CC = '2483303231@vtext.com'; // carrier email-to-text address, e.g. 2483303231@vtext.com
   var form = document.getElementById('bookForm');
   var note = document.getElementById('formNote');
+  var submitBtn = form.querySelector('button[type="submit"]');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var d = new FormData(form);
+    if (String(d.get('_honey') || '').trim()) return;
     var name = form.elements.name, email = form.elements.email;
     var ok = true;
     [name, email].forEach(function (el) { el.removeAttribute('aria-invalid'); });
@@ -96,23 +100,45 @@
       (name.getAttribute('aria-invalid') ? name : email).focus();
       return;
     }
-    var subject = 'Booking request: ' + d.get('type') + (d.get('org') ? ' for ' + d.get('org') : '');
-    var body = [
-      'Name: ' + d.get('name'),
-      'Organization: ' + (d.get('org') || '-'),
-      'Email: ' + d.get('email'),
-      'Event date: ' + (d.get('date') || 'TBD'),
-      'Event type: ' + d.get('type'),
-      'Audience size: ' + d.get('size'),
-      '',
-      'Desired takeaway:',
-      d.get('message') || '-'
-    ].join('\n');
-    var href = 'mailto:schmidtyspeaks@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    var a = document.createElement('a');
-    a.href = href; a.target = '_top'; a.rel = 'noopener';
-    document.body.appendChild(a); a.click(); a.remove();
-    note.innerHTML = 'Your email app should open now. If it doesn\u2019t, email <a href="' + href + '" target="_top">schmidtyspeaks@gmail.com</a>.';
-    note.className = 'form-note is-ok';
+    var payload = {
+      _subject: 'New booking request: ' + d.get('type') + (d.get('org') ? ' for ' + d.get('org') : '') + ' (' + d.get('name') + ')',
+      _template: 'table',
+      _replyto: d.get('email'),
+      Name: d.get('name'),
+      Organization: d.get('org') || '-',
+      Email: d.get('email'),
+      Phone: d.get('phone') || '-',
+      'Event date': d.get('date') || 'TBD',
+      'Event type': d.get('type'),
+      'Audience size': d.get('size'),
+      'Desired takeaway': d.get('message') || '-'
+    };
+    if (SMS_CC) payload._cc = SMS_CC;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending\u2026';
+    note.textContent = '';
+    note.className = 'form-note';
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || String(j.success) === 'false') throw new Error(j.message || 'Send failed'); }); })
+      .then(function () {
+        form.reset();
+        note.textContent = 'Thank you. Your request is on its way and Schmidty will follow up personally.';
+        note.className = 'form-note is-ok';
+      })
+      .catch(function () {
+        note.innerHTML = 'Something went wrong sending your request. Please email <a href="mailto:schmidtyspeaks@gmail.com">schmidtyspeaks@gmail.com</a> or call <a href="tel:+12483303231">248-330-3231</a>.';
+        note.className = 'form-note is-error';
+      })
+      .then(function () { submitBtn.disabled = false; submitBtn.textContent = 'Send booking request'; });
+  });
+
+  // Live clips: only one plays at a time
+  document.querySelectorAll('.clip video').forEach(function (v) {
+    v.addEventListener('play', function () {
+      document.querySelectorAll('.clip video').forEach(function (o) { if (o !== v) o.pause(); });
+    });
   });
 })();

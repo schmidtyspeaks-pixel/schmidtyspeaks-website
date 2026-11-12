@@ -124,6 +124,19 @@
 
     <div class="reels-head reveal">
       <div>
+        <p class="kicker">Live at Elevate</p>
+        <h3 class="h3">Moments from the room</h3>
+      </div>
+    </div>
+    <ul class="reels clips reveal">
+      <li class="clip"><video src="assets/clips/vulnerable.mp4" poster="assets/clips/vulnerable.jpg" controls playsinline preload="none" aria-label="Vulnerability on stage"></video><span class="clip-title">Vulnerability on stage</span></li>
+      <li class="clip"><video src="assets/clips/showing-up.mp4" poster="assets/clips/showing-up.jpg" controls playsinline preload="none" aria-label="Showing up for others"></video><span class="clip-title">Showing up for others</span></li>
+      <li class="clip"><video src="assets/clips/elevate-breathe.mp4" poster="assets/clips/elevate-breathe.jpg" controls playsinline preload="none" aria-label="Elevate and breathe"></video><span class="clip-title">Elevate and breathe</span></li>
+      <li class="clip"><video src="assets/clips/in-the-mix.mp4" poster="assets/clips/in-the-mix.jpg" controls playsinline preload="none" aria-label="In the mix at Elevate"></video><span class="clip-title">In the mix at Elevate</span></li>
+    </ul>
+
+    <div class="reels-head reveal">
+      <div>
         <p class="kicker">On Instagram</p>
         <h3 class="h3">Short reels from the road</h3>
       </div>
@@ -216,7 +229,7 @@
 
     <div class="talk-cards">
       <article class="talk-card reveal">
-        <img src="assets/stage.jpg" alt="A single microphone under a warm spotlight on a brick-walled stage" loading="lazy">
+        <img src="assets/elevate-dj.jpg" alt="Schmidty speaking into a microphone on stage at The Brothers Lounge while the DJ plays behind him" loading="lazy">
         <div class="talk-card-body">
           <p class="tag">Live experience</p>
           <h3 class="h3">Elevate</h3>
@@ -261,6 +274,18 @@
         </ul>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" aria-label="Photos from the stage">
+  <div class="wrap">
+    <ul class="gallery-grid">
+      <li class="g-tall reveal"><img src="assets/gallery/point.jpg" alt="Schmidty in a maroon jacket pointing to the crowd at The Brothers Lounge" loading="lazy"></li>
+      <li class="g-wide reveal"><img src="assets/gallery/arm-raised.jpg" alt="Schmidty on stage with one arm raised, microphone in hand" loading="lazy"></li>
+      <li class="g-tall reveal"><img src="assets/gallery/blue-mic.jpg" alt="Schmidty smiling on stage in a blue jacket holding a microphone" loading="lazy"></li>
+      <li class="g-tall reveal"><img src="assets/gallery/mic-maroon.jpg" alt="Schmidty speaking into a microphone in front of The Brothers Lounge sign" loading="lazy"></li>
+    </ul>
   </div>
 </section>
 
@@ -337,19 +362,10 @@
       </div>
       <div class="field-row">
         <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
-        <label class="field"><span>Event date</span><input name="date" type="date"></label>
+        <label class="field"><span>Phone</span><input name="phone" type="tel" autocomplete="tel"></label>
       </div>
       <div class="field-row">
-        <label class="field"><span>Event type</span>
-          <select name="type">
-            <option>Keynote</option>
-            <option>Workshop or breakout</option>
-            <option>Panel moderation</option>
-            <option>Custom curriculum</option>
-            <option>Elevate live event</option>
-            <option>Not sure yet</option>
-          </select>
-        </label>
+        <label class="field"><span>Event date</span><input name="date" type="date"></label>
         <label class="field"><span>Audience size</span>
           <select name="size">
             <option>Under 50</option>
@@ -359,9 +375,20 @@
           </select>
         </label>
       </div>
+      <label class="field"><span>Event type</span>
+          <select name="type">
+            <option>Keynote</option>
+            <option>Workshop or breakout</option>
+            <option>Panel moderation</option>
+            <option>Custom curriculum</option>
+            <option>Elevate live event</option>
+            <option>Not sure yet</option>
+          </select>
+      </label>
       <label class="field"><span>What should your audience walk away with?</span><textarea name="message" rows="4"></textarea></label>
       <button class="btn btn-gold btn-block" type="submit">Send booking request</button>
-      <p class="form-note" id="formNote" role="status" aria-live="polite">This opens your email app with the details filled in.</p>
+      <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="form-note" id="formNote" role="status" aria-live="polite">Goes straight to Schmidty. Expect a personal reply.</p>
     </form>
   </div>
 </section>
