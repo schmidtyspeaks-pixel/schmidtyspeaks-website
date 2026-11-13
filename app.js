@@ -79,33 +79,54 @@
     player.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
-  // Booking form -> emailed straight to Schmidty (FormSubmit), with a text alert copy
-  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/schmidtyspeaks@gmail.com';
-  var SMS_CC = '2483303231@vtext.com'; // carrier email-to-text address, e.g. 2483303231@vtext.com
+  // Booking form -> emailed to Schmidty (Web3Forms) + instant phone alert (ntfy)
+  var W3F_ENDPOINT = 'https://api.web3forms.com/submit';
+  var W3F_KEY = '34744278-2264-452a-a3f9-62e95d0c0af3';
+  var NTFY_TOPIC = 'schmidty-bookings-c6615a2cbc';
   var form = document.getElementById('bookForm');
   var note = document.getElementById('formNote');
   var submitBtn = form.querySelector('button[type="submit"]');
   function cleanEmail(v) {
-    // strip spaces, zero-width characters, and stray punctuation that phones/autofill can add
     return String(v || '').replace(/[\s\u200B-\u200D\uFEFF\u00A0]/g, '').replace(/^mailto:/i, '').replace(/[.,;]+$/, '');
   }
-  function nativeSubmit(payload) {
-    // Fallback: classic form post (no CORS), returns to the site afterwards
+  function phoneAlert(f) {
+    // Push to Schmidty's phone via the ntfy app. text/plain JSON avoids a CORS preflight.
+    var msg = f.Name + (f.Organization !== '-' ? ' (' + f.Organization + ')' : '') +
+      '\n' + f['Event type'] + ' | ' + f['Event date'] + ' | ' + f['Audience size'] +
+      '\nEmail: ' + f.Email + (f.Phone !== '-' ? '\nPhone: ' + f.Phone : '') +
+      (f['Desired takeaway'] !== '-' ? '\n' + String(f['Desired takeaway']).slice(0, 300) : '');
+    try {
+      return fetch('https://ntfy.sh/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ topic: NTFY_TOPIC, title: 'New booking request', message: msg, priority: 5, tags: ['microphone'], click: 'mailto:' + f.Email }),
+        keepalive: true
+      }).catch(function () {});
+    } catch (err) { return Promise.resolve(); }
+  }
+  function toFormData(o) {
+    var fd = new FormData();
+    Object.keys(o).forEach(function (k) { fd.append(k, o[k]); });
+    return fd;
+  }
+  function nativePost(o) {
     var f = document.createElement('form');
-    f.method = 'POST';
-    f.action = FORM_ENDPOINT.replace('/ajax/', '/');
-    f.style.display = 'none';
-    var extra = { _captcha: 'false', _next: location.origin + location.pathname + '?sent=1#book' };
-    Object.keys(extra).forEach(function (k) { payload[k] = extra[k]; });
-    Object.keys(payload).forEach(function (k) {
-      var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = payload[k]; f.appendChild(i);
+    f.method = 'POST'; f.action = W3F_ENDPOINT; f.style.display = 'none';
+    o.redirect = location.origin + location.pathname + '?sent=1#book';
+    Object.keys(o).forEach(function (k) {
+      var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = o[k]; f.appendChild(i);
     });
-    document.body.appendChild(f);
-    f.submit();
+    document.body.appendChild(f); f.submit();
   }
   if (/[?&]sent=1/.test(location.search)) {
     note.textContent = 'Thank you. Your request is on its way and Schmidty will follow up personally.';
     note.className = 'form-note is-ok';
+  }
+  function done(ok, msg) {
+    if (ok) form.reset();
+    note.innerHTML = msg;
+    note.className = 'form-note ' + (ok ? 'is-ok' : 'is-error');
+    submitBtn.disabled = false; submitBtn.textContent = 'Send booking request';
   }
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -125,10 +146,7 @@
       (name.getAttribute('aria-invalid') ? name : email).focus();
       return;
     }
-    var payload = {
-      _subject: 'New booking request: ' + d.get('type') + (d.get('org') ? ' for ' + d.get('org') : '') + ' (' + nameVal + ')',
-      _template: 'table',
-      _replyto: emailVal,
+    var fields = {
       Name: nameVal,
       Organization: d.get('org') || '-',
       Email: emailVal,
@@ -138,34 +156,37 @@
       'Audience size': d.get('size'),
       'Desired takeaway': d.get('message') || '-'
     };
-    if (SMS_CC) payload._cc = SMS_CC;
+    var payload = Object.assign({
+      access_key: W3F_KEY,
+      subject: 'New booking request: ' + d.get('type') + (d.get('org') ? ' for ' + d.get('org') : '') + ' (' + nameVal + ')',
+      from_name: 'SchmidtySpeaks.com',
+      replyto: emailVal
+    }, fields);
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending\u2026';
     note.textContent = '';
     note.className = 'form-note';
-    var serverSaid = null;
-    fetch(FORM_ENDPOINT, {
+    var alertSent = phoneAlert(fields);
+    var fail = 'We couldn\u2019t send that just now. Please email <a href="mailto:schmidtyspeaks@gmail.com">schmidtyspeaks@gmail.com</a> or call <a href="tel:+12483303231">248-330-3231</a>.';
+    fetch(W3F_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Accept': 'application/json' },
+      body: toFormData(payload) // multipart = "simple" request, no CORS preflight
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
-        if (!r.ok || String(j.success) === 'false') { serverSaid = j.message || null; throw new Error(serverSaid || 'Send failed'); }
+        if (!r.ok || j.success === false) throw new Error(j.message || 'Send failed');
       });
-    })
-      .then(function () {
-        form.reset();
-        note.textContent = 'Thank you. Your request is on its way and Schmidty will follow up personally.';
-        note.className = 'form-note is-ok';
-        submitBtn.disabled = false; submitBtn.textContent = 'Send booking request';
-      })
-      .catch(function () {
-        if (!serverSaid) { nativeSubmit(payload); return; } // network/CORS hiccup: use the classic post
-        note.innerHTML = 'We couldn\u2019t send that just now. Please email <a href="mailto:schmidtyspeaks@gmail.com">schmidtyspeaks@gmail.com</a> or call <a href="tel:+12483303231">248-330-3231</a>.';
-        note.className = 'form-note is-error';
-        if (window.console) console.warn('Form service:', serverSaid);
-        submitBtn.disabled = false; submitBtn.textContent = 'Send booking request';
-      });
+    }).then(function () {
+      done(true, 'Thank you. Your request is on its way and Schmidty will follow up personally.');
+    }).catch(function (err) {
+      if (window.console) console.warn('Form service:', err && err.message);
+      // Network/CORS hiccup: retry as a classic form post (no CORS involved), which returns to the site.
+      if (!(err && err.message && err.message !== 'Failed to fetch' && !/NetworkError|Load failed/i.test(err.message))) {
+        alertSent.then(function () { nativePost(payload); });
+        return;
+      }
+      alertSent.then(function () { done(false, fail); });
+    });
   });
 
   // Live clips: only one plays at a time
